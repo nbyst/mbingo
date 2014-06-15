@@ -14,9 +14,13 @@ class BingoBox:
         pass
 
 class BingoCard:
+    """
+    プレイヤーに配られれるカードを表すクラス
+    たぶん意味的規模(?)としては一番小さいくらす
+    """
     def __init__(self):
         self.cell = [[ {"num":make_uniq_nums(),"punched":False} for x in range(5)] for y in range(5)]
-        self.cell[2][2] = {"num":0, "punched":True} # 真ん中はあけておく
+        self.cell[2][2] = {"num":0, "punched":True} # カードの真ん中の穴はあけておく。
 
     def punch(self,hit_number):
         for line in self.cell:
@@ -51,6 +55,7 @@ def main():
         game.play()
     #while game.was_bingo_player < 5:
     #    game.play()
+
     #test_BingoCard_punch() 
 
 """
