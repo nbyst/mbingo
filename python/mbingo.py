@@ -4,14 +4,22 @@
 import random
 import sys
 
-def make_uniq_nums():
-    return random.randint(1,75)
+class BingoNumOverPullException(BaseException):
+    pass
 
-class BingoBox:
+class BingoNumGenerator:
     def __init__(self):
-        pass
+        self.used_nums = []
     def pull(self):
-        pass
+        if len(self.used_nums) >= 75:
+            raise BingoNumOverPullException
+
+        pulled_num = random.randint(1,75)
+        if pulled_num not in self.used_nums:
+            self.used_nums.append(pulled_num)
+            return pulled_num 
+        else:
+            return self.pull()
 
 class BingoCard:
     """
@@ -19,7 +27,8 @@ class BingoCard:
     たぶん意味的規模(?)としては一番小さいくらす
     """
     def __init__(self):
-        self.cell = [[ {"num":make_uniq_nums(),"punched":False} for x in range(5)] for y in range(5)]
+        g = BingoNumGenerator()
+        self.cell = [[ {"num": g.pull(),"punched":False} for x in range(5)] for y in range(5)]
         self.cell[2][2] = {"num":0, "punched":True} # カードの真ん中の穴はあけておく。
 
     def punch(self,hit_number):
@@ -38,8 +47,9 @@ class BingoCard:
         print("")
 
     def check_all():
+        pass
 
- 
+
 class BingoGame:
     def __init__(self,player=3):
         self.was_bingo_player = 0
@@ -49,18 +59,32 @@ class BingoGame:
         pass
 
 def main():
-    game = BingoGame(player=3) 
-    for card in game.player_cards:
-        card.show()
-        game.play()
+    # game = BingoGame(player=3) 
+    # for card in game.player_cards:
+    #     card.show()
+    #     game.play()
     #while game.was_bingo_player < 5:
     #    game.play()
 
+    #test_BingoNumGenerator()
+    #test_BingoNumGenerator_overpull()
+    #test_BingoCard_init() 
     #test_BingoCard_punch() 
 
 """
 test methods
 """
+
+def test_BingoNumGenerator():
+    generator = BingoNumGenerator()
+    for i in xrange(1,75+1):
+        sys.stdout.write("{0} ".format(generator.pull()))
+
+def test_BingoNumGenerator_overpull():
+    generator = BingoNumGenerator()
+    for i in xrange(1,77):
+        sys.stdout.write("{0} ".format(generator.pull()))
+
 def test_BingoCard_init():
     card = BingoCard()
     card.show()
