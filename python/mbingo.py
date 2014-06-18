@@ -35,8 +35,10 @@ class BingoCard:
         for line in self.cell:
             for current_cell in line:
                 if current_cell["num"] == hit_number:
+                    current_cell["num"] = "--" #本当はpunch前の数字がわかる方がいいかもしれないが...
                     current_cell["punched"] = True
                     return True
+        return False
 
     def show(self):
         for line in self.cell:
@@ -46,25 +48,38 @@ class BingoCard:
             print("]")
         print("")
 
-    def check_all():
-        pass
-
+    def listen(self,drawn_number):
+        #print("listened number is: {0}".format(drawn_number))
+        self.punch(drawn_number)
 
 class BingoGame:
-    def __init__(self,player=3):
+    def __init__(self,member_count=3):
         self.was_bingo_player = 0
-        self.player_cards = [BingoCard() for n in range(player)]
+        self.player_cards = [BingoCard() for n in range(member_count)]
+        self.bingobox = BingoNumGenerator()
 
-    def play(self):
+    def draw(self):
+        drawn_number = self.bingobox.pull()
+        [player.listen(drawn_number) for player in self.player_cards]
+
+    def current_status(self):
         pass
 
+    def show_drawn_numbers(self):
+        print("Drawn Numbers:")
+        print(self.bingobox.used_nums)
+
 def main():
-    # game = BingoGame(player=3) 
-    # for card in game.player_cards:
-    #     card.show()
-    #     game.play()
+    game = BingoGame(member_count=3)
+    [card.show() for card in game.player_cards]
+    for i in range(1,10):
+        game.draw()
+    [card.show() for card in game.player_cards]
+    game.show_drawn_numbers()
+
+
     #while game.was_bingo_player < 5:
-    #    game.play()
+    #    game.draw()
 
     #test_BingoNumGenerator()
     #test_BingoNumGenerator_overpull()
